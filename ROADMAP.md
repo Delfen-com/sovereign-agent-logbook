@@ -13,6 +13,7 @@ What is planned, what was decided, and what was rejected — in the open.
 | **MCP conformance report** — run the official MCP conformance suite in CI and publish the result | "Agnostic" should be verifiable | When the suite is stable enough to run unattended |
 | **Signed container + SBOM** — sign the image, publish a software bill of materials | Reproducibility for auditors | v0.2 |
 | **A2A agent card** — describe the logbook as an A2A-discoverable service | Agent-to-agent setups | v0.3 |
+| **EU-hosted mirror** — candidates: self-hosted Forgejo on a Hetzner box (full control, ~€5/month), CodeFloe (Swiss, young), an EU-hosted GitLab | Platform independence that matches the sovereignty claim | Decide in week 2 |
 | **Dutch README** | Half the first audience reads Dutch first | Soon |
 
 ## Decided
@@ -23,7 +24,7 @@ What is planned, what was decided, and what was rejected — in the open.
 | 2026-11-05 | The log format is a separate, Apache-licensed spec (`SPEC.md`) | A standard is earned when other people's tools write to it |
 | 2026-11-05 | Public from the first commit | Trust claims only mean something when the code is readable |
 | 2026-11-05 | Python reference implementation, MCP SDK 2.x | Widest reach among people building agents today |
-| 2026-11-05 | Mirror on Codeberg | Do not depend on one platform; practise what we sell |
+| 2026-11-05 | Keep an EU-hosted mirror; **not** on Codeberg (its terms are written for non-commercial free-software projects, and this project has a company behind it and a paid hosted version planned) | Do not depend on one platform, without building on a host that could reasonably ask us to leave |
 
 ## Rejected
 

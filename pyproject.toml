@@ -31,7 +31,6 @@ logbook = "sovereign_agent_logbook.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/Delfen-com/sovereign-agent-logbook"
-Mirror = "https://codeberg.org/delfen/sovereign-agent-logbook"
 Specification = "https://github.com/Delfen-com/sovereign-agent-logbook/blob/main/SPEC.md"
 
 [tool.hatch.build.targets.wheel]

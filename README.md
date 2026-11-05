@@ -115,11 +115,13 @@ Field meanings are normative in [SPEC.md](SPEC.md).
 | Security issues have a process | [SECURITY.md](SECURITY.md) |
 | Decisions are recorded | [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md) |
 
-## Also on Codeberg
+## Not tied to one platform
 
-This repository is mirrored to [Codeberg](https://codeberg.org), a
-non-profit forge hosted in the EU, so that the code does not depend on a
-single platform. Both copies are identical.
+GitHub is where most developers look, so this is the working repository.
+An identical mirror on EU-hosted infrastructure is planned so that the code
+never depends on a single platform; the target is being chosen and will be
+recorded in [ROADMAP.md](ROADMAP.md). Until then, `git clone` gives you a
+complete copy — that is the point of git.
 
 ## Hosted version
 
