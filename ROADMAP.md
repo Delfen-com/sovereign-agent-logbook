@@ -6,7 +6,8 @@ What is planned, what was decided, and what was rejected — in the open.
 
 | Item | Why | Status |
 | --- | --- | --- |
-| **Anchoring** — write the latest `(seq, hash)` to an external place on a schedule (email, ticket, second host, public timestamp) | Closes the truncation gap in `THREAT-MODEL.md` | Next — v0.2 |
+| **Anchoring with pluggable targets** — on a schedule, write the latest `(seq, hash)` (64 characters, no content) to a place the log owner cannot edit alone. One interface, several targets: (1) a plain second place — signed email to the DPO, a ticket, a second host; (2) an eIDAS qualified timestamp, legally recognised across the EU; (3) OpenTimestamps (public, free); (4) EBSI, the EU member-state blockchain, for public-sector buyers. Ships with (1) and (2) first. | Closes the truncation gap in `THREAT-MODEL.md`; gives a verifiable "blockchain" answer without putting the log on a blockchain | Next — v0.2 |
+| **Conversation fingerprinting** — optional field holding the hash of a full transcript stored elsewhere, so the logbook proves a conversation was not altered without containing it | Keeps personal data out of the audit log while still covering it | v0.2 |
 | **Gateway mode** — sit between the agent and its tools so logging cannot be skipped | Closes the "agent didn't log" gap | v0.3 |
 | **Retention policy** — rotate files by month, keep the chain across files | Needed for real deployments | v0.2 |
 | **MCP conformance report** — run the official MCP conformance suite in CI and publish the result | "Agnostic" should be verifiable | When the suite is stable enough to run unattended |
@@ -28,6 +29,6 @@ What is planned, what was decided, and what was rejected — in the open.
 
 | Idea | Why not |
 | --- | --- |
-| Blockchain / distributed ledger | Adds cost and complexity for a problem a hash chain plus anchoring solves |
+| Storing the log **on** a blockchain | Slow, costly, and every entry becomes public and permanent — a privacy problem. Anchoring a fingerprint to one (see Planned) gives the guarantee without the cost |
 | Storing the log in a database by default | A plain file is easier to audit, back up and verify independently |
 | Sending logs to a Delfen-hosted service by default | The whole point is that the log stays with the owner |
