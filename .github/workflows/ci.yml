@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Run the public test suite
+        run: pytest -v --cov=sovereign_agent_logbook --cov-report=term-missing
+      - name: End-to-end over stdio (client -> server -> file -> verify)
+        run: |
+          rm -f /tmp/e2e.jsonl
+          LOGBOOK_PATH=/tmp/e2e.jsonl python scripts/e2e_stdio.py
+          logbook --path /tmp/e2e.jsonl verify
+
+  docker:
+    name: Container builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t sovereign-agent-logbook:ci .
+      - name: Image runs as non-root and starts
+        run: |
+          docker run --rm sovereign-agent-logbook:ci id -u | grep -q '^10001$'
+          docker run -d --name lb -p 127.0.0.1:8765:8765 sovereign-agent-logbook:ci
+          sleep 3
+          docker logs lb
+          docker rm -f lb
