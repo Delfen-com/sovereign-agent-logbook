@@ -19,10 +19,16 @@ because it speaks the open [Model Context Protocol](https://modelcontextprotocol
 
 ## Why
 
-Since 2 August 2026 the EU AI Act asks deployers of high-risk AI systems for
-logging, human oversight and incident reporting. Autonomous agents make
-that harder: one task is ten tool calls, and when something goes wrong
-nobody can reconstruct which call did what, on whose approval.
+The EU AI Act requires providers and deployers of high-risk AI systems to
+keep logs, keep a human able to intervene, and report serious incidents
+(Articles 12, 14, 26(6) and 73). Those duties were due on 2 August 2026; the
+Digital Omnibus on AI (Regulation (EU) 2026/1744, in force 27 July 2026)
+moved them to 2 December 2027 for most high-risk systems and 2 August 2028
+for AI built into regulated products. The clock moved; it did not stop.
+
+Autonomous agents make those duties harder. One task is ten tool calls, and
+when something goes wrong nobody can reconstruct which call did what, on
+whose approval.
 
 Most tools for this live inside a US cloud platform or are built for one
 model vendor. If you run a sovereign setup — an open-weight model on your
@@ -33,13 +39,15 @@ thing.
 
 - **A tamper-evident log.** Each event carries the hash of the previous one.
   Change, insert, remove or reorder a line and `logbook verify` tells you
-  exactly where. ([How, in 60 lines](src/sovereign_agent_logbook/chain.py))
+  exactly where. ([How, in one file of about 80 lines](src/sovereign_agent_logbook/chain.py))
 - **Any model, any host, or no cloud at all.** Four MCP tools:
   `log_event`, `verify_logbook`, `recent_events`, `export_logbook`.
 - **Secrets masked before writing.** Keys that look like passwords, tokens,
   API keys, IBANs or BSNs are replaced with `***masked***` before hashing.
-- **Zero outbound network, proven.** A test forbids every socket connection
-  at OS level and runs the full cycle anyway. ([tests/test_no_network.py](tests/test_no_network.py))
+- **No outbound network, proven.** A test forbids every outbound socket
+  connection in the Python runtime and still completes a full write, verify
+  and export cycle; a second test asserts the package imports no HTTP client.
+  ([tests/test_no_network.py](tests/test_no_network.py))
 - **Audit-ready export.** JSON and CSV your DPO or auditor can read without
   this tool.
 - **An open format.** [SPEC.md](SPEC.md) is the log format, separate from
@@ -107,7 +115,7 @@ Field meanings are normative in [SPEC.md](SPEC.md).
 | What we promise | How you can check it yourself |
 | --- | --- |
 | Tamper-evident | Edit any line of a logbook file, run `logbook verify` |
-| No outbound network | `tests/test_no_network.py`, and the Dockerfile has no network tooling |
+| No outbound network | `tests/test_no_network.py`; the Dockerfile adds no network tooling |
 | Tests are public and run on every change | The CI badge above links to every run |
 | We say what it does **not** protect against | [THREAT-MODEL.md](THREAT-MODEL.md) |
 | We say which AI Act articles it helps with, and which it does not | [docs/ai-act-mapping.md](docs/ai-act-mapping.md) |
@@ -128,7 +136,10 @@ complete copy — that is the point of git.
 If you would rather not run a server, a hosted version on EU-only
 infrastructure (Hetzner, Germany / Scaleway, France) with retention
 policies, daily signed anchoring of the chain and a monthly audit export
-is planned. Register interest at [delfen.ai](https://delfen.ai).
+is planned. Terms as offered on [delfen.ai/logbook](https://delfen.ai/logbook):
+€29 per month excluding VAT, 30-day free trial, cancel any time; if the
+hosted version is not live by the end of a trial, the trial is cancelled
+rather than charged.
 
 ## Licence
 

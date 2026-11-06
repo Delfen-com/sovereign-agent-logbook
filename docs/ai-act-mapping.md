@@ -7,10 +7,14 @@ obligation is met by your organisation's process, not by installing a tool.
 Please copy this table into your own evidence file and strike out what does
 not apply.
 
-Regulation (EU) 2024/1689. Article numbers follow the final text. Dates
-reflect the general application date of 2 August 2026; the Digital Omnibus
-may shift some high-risk deadlines — check the current state before relying
-on a date.
+Regulation (EU) 2024/1689, as amended by Regulation (EU) 2026/1744 (the
+Digital Omnibus on AI, adopted 8 July 2026, in force 27 July 2026). The
+Omnibus amended Article 113: the high-risk obligations in Chapter III
+(including Articles 12, 14 and 26) apply from **2 December 2027** for
+systems under Article 6(2) / Annex III, and from **2 August 2028** for
+systems under Article 6(1) / Annex I (AI built into regulated products).
+Until then these are duties to prepare for, not duties in force. Check the
+current text before relying on a date.
 
 | Obligation (plain words) | Article | What the logbook contributes | What it does NOT do |
 | --- | --- | --- | --- |
@@ -30,9 +34,9 @@ does is the vendor to avoid.
 
 ## Sources used for this mapping
 
-- Regulation (EU) 2024/1689, Official Journal, 12 July 2024
-- EU AI Act compliance for SMEs: 2026 checklist — trooper.ai
-- EU AI Act: what European SMEs must do before 2 August 2026 — First AI Movers
+- Regulation (EU) 2024/1689 (AI Act), Official Journal, 12 July 2024 — https://eur-lex.europa.eu/eli/reg/2024/1689/oj
+- Regulation (EU) 2026/1744 (Digital Omnibus on AI), 8 July 2026, in force 27 July 2026 — https://eur-lex.europa.eu/eli/reg/2026/1744/oj
+- Article 113 as amended, consolidated text — https://artificialintelligenceact.eu/article/113/
 
 If you are a lawyer and this table is wrong, please open an issue. It will
 be fixed in the open.

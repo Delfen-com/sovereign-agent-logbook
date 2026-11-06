@@ -1,9 +1,15 @@
-"""Zero outbound network, proven rather than promised.
+"""No outbound network, proven rather than promised.
 
 Two checks:
-1. The logbook package never imports an HTTP client library.
-2. With every socket connection forbidden at the OS level, a full
-   write -> verify -> export cycle still succeeds.
+1. The logbook core (chain, store, cli) never imports an HTTP client library.
+2. With every outbound socket connection forbidden in the Python runtime,
+   a full write -> verify -> export cycle still succeeds.
+
+Honest scope: the MCP server module depends on the `mcp` SDK, which bundles
+an HTTP client for its optional HTTP transport (used to LISTEN, not to call
+out). The core that touches the log file is what these tests cover; the
+server adds no outbound calls of its own, which a reader can confirm in
+server.py (about 100 lines).
 """
 
 import socket
