@@ -18,7 +18,7 @@ current text before relying on a date.
 
 | Obligation (plain words) | Article | What the logbook contributes | What it does NOT do |
 | --- | --- | --- | --- |
-| Keep records of what a high-risk system did, so events can be traced afterwards | Art. 12 (record-keeping, providers) and Art. 26(6) (deployers keep the logs the system generates) | Every agent action is written with who / what / why / approval / outcome, append-only, tamper-evident, exportable | It does not decide retention periods or store the logs for you (the hosted version does) |
+| Keep records of what a high-risk system did, so events can be traced afterwards | Art. 12 (record-keeping, providers) and Art. 26(6) (deployers keep the logs the system generates) | Each action the agent logs is written with who / what / why / approval / outcome, append-only, tamper-evident, exportable | It does not decide retention periods or store the logs for you (the hosted version does) |
 | Humans must be able to oversee the system and intervene | Art. 14 (human oversight) and Art. 26(2) | Records which human approved which action, or which rule allowed it automatically; `escalated` outcome marks hand-offs to a person | It does not implement the approval step itself; it records it |
 | Report serious incidents | Art. 73 | A verified, exportable timeline of events around the incident | It does not detect incidents or file reports |
 | Give deployers the documentation they need | Art. 13, Art. 25 | `SPEC.md`, `THREAT-MODEL.md` and this file are documents you can hand over | It does not describe *your* system |
