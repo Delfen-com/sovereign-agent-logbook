@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.1 — unreleased
+
+First release on PyPI and in the official MCP registry. No change to the
+logbook's behaviour or format.
+
+- Release workflow: tests, then publish to PyPI with trusted publishing (no
+  stored password), then publish `server.json` to the MCP registry with
+  GitHub OIDC
+- `server.json` describing the server for the MCP registry
+- README: registry ownership line; narrower claims on logged actions, the
+  no-network test and the AI Act dates (pull request #1)
+
 ## 0.1.0 — 2026-11-05
 
 First public release. A working skeleton:

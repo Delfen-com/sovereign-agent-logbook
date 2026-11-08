@@ -1,5 +1,7 @@
 # Sovereign Agent Logbook
 
+<!-- mcp-name: io.github.Delfen-com/sovereign-agent-logbook -->
+
 **Every AI agent needs a logbook. Yours should stay in Europe.**
 
 An open-source, tamper-evident logbook for AI agents. It records each
