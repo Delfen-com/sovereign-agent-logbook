@@ -2,11 +2,12 @@
 
 **Every AI agent needs a logbook. Yours should stay in Europe.**
 
-An open-source, tamper-evident logbook for AI agents. It records every
-action, tool call and human approval — who, what, why, approved by whom,
-with what outcome — in an append-only, hash-chained file on **your own
-server**. It works with **any model** (Mistral, GPT-NL, Llama, Claude, GPT…)
-because it speaks the open [Model Context Protocol](https://modelcontextprotocol.io).
+An open-source, tamper-evident logbook for AI agents. It records each
+action, tool call and human approval your agent logs in an append-only,
+hash-chained file on **your own server**. Each entry says who, what, why,
+approved by whom and with what outcome. It works with **any model**
+(Mistral, GPT-NL, Llama, Claude, GPT…) because it speaks the open [Model
+Context Protocol](https://modelcontextprotocol.io).
 
 [![CI](https://github.com/Delfen-com/sovereign-agent-logbook/actions/workflows/ci.yml/badge.svg)](https://github.com/Delfen-com/sovereign-agent-logbook/actions/workflows/ci.yml)
 ![Licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue)
@@ -20,11 +21,15 @@ because it speaks the open [Model Context Protocol](https://modelcontextprotocol
 ## Why
 
 The EU AI Act requires providers and deployers of high-risk AI systems to
-keep logs, keep a human able to intervene, and report serious incidents
-(Articles 12, 14, 26(6) and 73). Those duties were due on 2 August 2026; the
-Digital Omnibus on AI (Regulation (EU) 2026/1744, in force 27 July 2026)
-moved them to 2 December 2027 for most high-risk systems and 2 August 2028
-for AI built into regulated products. The clock moved; it did not stop.
+keep logs and keep a human able to intervene (Articles 12, 14 and 26(6)).
+Those duties were due on 2 August 2026, or 2 August 2027 for AI built into
+regulated products. That changed with the Digital Omnibus on AI (Regulation
+(EU) 2026/1744, in force 27 July 2026). It moved them to 2 December 2027 for
+most high-risk systems and 2 August 2028 for AI built into regulated
+products. The clock moved; it did not stop. Reporting serious incidents
+(Article 73) sits in a different chapter of the Act, outside that
+postponement; check its timing for your system. The logbook gives you a
+verified timeline of the agent's logged actions to report from.
 
 Autonomous agents make those duties harder. One task is ten tool calls, and
 when something goes wrong nobody can reconstruct which call did what, on
@@ -44,9 +49,10 @@ thing.
   `log_event`, `verify_logbook`, `recent_events`, `export_logbook`.
 - **Secrets masked before writing.** Keys that look like passwords, tokens,
   API keys, IBANs or BSNs are replaced with `***masked***` before hashing.
-- **No outbound network, proven.** A test forbids every outbound socket
-  connection in the Python runtime and still completes a full write, verify
-  and export cycle; a second test asserts the package imports no HTTP client.
+- **No outbound network, proven by a public test.** The test blocks outbound
+  socket connections in the Python runtime and still completes a full write,
+  verify and export cycle. A second test asserts that the logbook core imports
+  no HTTP client.
   ([tests/test_no_network.py](tests/test_no_network.py))
 - **Audit-ready export.** JSON and CSV your DPO or auditor can read without
   this tool.
