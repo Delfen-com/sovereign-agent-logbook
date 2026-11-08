@@ -66,7 +66,7 @@ thing.
 ## Five-minute install
 
 ```bash
-pip install git+https://github.com/Delfen-com/sovereign-agent-logbook
+pip install sovereign-agent-logbook
 ```
 
 Point your MCP-capable agent host at the server over stdio. For Claude
