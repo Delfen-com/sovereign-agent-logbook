@@ -9,7 +9,7 @@ Public API:
 from .chain import GENESIS_HASH, compute_hash, verify_file
 from .store import Event, Logbook, VerificationResult
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 SPEC_VERSION = "0.1"
 
 __all__ = [

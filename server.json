@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Delfen-com/sovereign-agent-logbook",
+  "title": "Sovereign Agent Logbook",
+  "description": "Tamper-evident logbook for AI agents: hash-chained, on your own server, any model via MCP.",
+  "repository": {
+    "url": "https://github.com/Delfen-com/sovereign-agent-logbook",
+    "source": "github"
+  },
+  "version": "0.1.1",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "sovereign-agent-logbook",
+      "version": "0.1.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
