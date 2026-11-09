@@ -65,6 +65,10 @@ thing.
 
 ## Five-minute install
 
+Needs Python 3.11 or newer. On an older Python, pip reports that it cannot
+find the package; check with `python3 --version`. The Python that ships
+with macOS is 3.9.
+
 ```bash
 pip install sovereign-agent-logbook
 ```
@@ -116,7 +120,10 @@ logbook --path /var/lib/logbook/agent.jsonl tail --limit 10
  "run_id":"task-7f3e","tags":["finance"]}
 ```
 
-Field meanings are normative in [SPEC.md](SPEC.md).
+Field meanings are normative in [SPEC.md](SPEC.md). Every call to
+`log_event` needs `agent_id`, `model` and `action`; the logbook rejects a
+call without them. `model` is required on purpose: an auditor needs to see
+which model version took each action.
 
 ## Trust: no black box
 
