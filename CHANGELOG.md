@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 — unreleased
+## 0.1.1 — 2026-11-08
 
 First release on PyPI and in the official MCP registry. No change to the
 logbook's behaviour or format.
