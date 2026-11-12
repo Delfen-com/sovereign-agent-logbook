@@ -20,6 +20,13 @@ Context Protocol](https://modelcontextprotocol.io).
 > test behind it. What it does not do yet is listed honestly in
 > [ROADMAP.md](ROADMAP.md).
 
+**Follow the build.** Get the release notes by email at
+[delfen.ai/logbook](https://delfen.ai/logbook) (a few mails a year, plus the
+weekly Delfen CTO update; unsubscribe any time). Found a hole in the threat
+model, or an event field that does not fit your agents? Open an
+[issue](https://github.com/Delfen-com/sovereign-agent-logbook/issues). If the
+logbook is useful to you, a star helps other people find it.
+
 ## Why
 
 The EU AI Act requires providers and deployers of high-risk AI systems to
