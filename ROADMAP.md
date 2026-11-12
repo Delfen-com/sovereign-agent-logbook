@@ -6,9 +6,11 @@ What is planned, what was decided, and what was rejected — in the open.
 
 | Item | Why | Status |
 | --- | --- | --- |
-| **Anchoring with pluggable targets** — on a schedule, write the latest `(seq, hash)` (64 characters, no content) to a place the log owner cannot edit alone. One interface, several targets: (1) a plain second place — signed email to the DPO, a ticket, a second host; (2) an eIDAS qualified timestamp, legally recognised across the EU; (3) OpenTimestamps (public, free); (4) EBSI, the EU member-state blockchain, for public-sector buyers. Ships with (1) and (2) first. | Closes the truncation gap in `THREAT-MODEL.md`; gives a verifiable "blockchain" answer without putting the log on a blockchain | Next — v0.2 |
+| **Anchoring with pluggable targets** — on a schedule, write the latest `(seq, hash)` (a sequence number and a 64-character hash, no content) to a place the log owner cannot edit alone. One interface, several targets: (1) a plain second place — signed email to the DPO, a ticket, a second host; (2) an eIDAS qualified timestamp, which EU law presumes accurate for its time and the data it covers (eIDAS Art. 41(2)); (3) OpenTimestamps (public, free); (4) EBSI, the EU member-state blockchain, for public-sector buyers. Ships with (1) and (2) first. | Closes the truncation gap in `THREAT-MODEL.md`; gives a verifiable "blockchain" answer without putting the log on a blockchain | Next — v0.2 |
 | **Conversation fingerprinting** — optional field holding the hash of a full transcript stored elsewhere, so the logbook proves a conversation was not altered without containing it | Keeps personal data out of the audit log while still covering it | v0.2 |
 | **Gateway mode** — sit between the agent and its tools so logging cannot be skipped | Closes the "agent didn't log" gap | v0.3 |
+| **Refused outcome** — a new `outcome` value for a call that is refused before it runs, so a refusal gets its own row. Name and how it differs from `"escalated"` to settle in the issue; compatibility with v0.1 readers checked first | A refused call is often the first one an auditor asks about; raised on r/mcp | Before gateway mode lands |
+| **Anchoring every n events** — as an option next to the time schedule | Asked on r/mcp; some setups care about event count more than time | With anchoring, if users need it |
 | **Retention policy** — rotate files by month, keep the chain across files | Needed for real deployments | v0.2 |
 | **MCP conformance report** — run the official MCP conformance suite in CI and publish the result | "Agnostic" should be verifiable | When the suite is stable enough to run unattended |
 | **Signed container + SBOM** — sign the image, publish a software bill of materials | Reproducibility for auditors | v0.2 |
@@ -25,6 +27,8 @@ What is planned, what was decided, and what was rejected — in the open.
 | 2026-11-05 | Public from the first commit | Trust claims only mean something when the code is readable |
 | 2026-11-05 | Python reference implementation, MCP SDK 2.x | Widest reach among people building agents today |
 | 2026-11-05 | Keep an EU-hosted mirror; **not** on Codeberg (its terms are written for non-commercial free-software projects, and this project has a company behind it and a paid hosted version planned) | Do not depend on one platform, without building on a host that could reasonably ask us to leave |
+| 2026-11-12 | Gateway mode makes logging required for agents behind it; the opt-in recorder mode stays for setups where nothing can sit between the agent and its tools | Both are real deployments; the threat model already says which guarantee each one gives |
+| 2026-11-12 | A refused call will get its own `outcome` value in `SPEC.md` before gateway mode lands | In gateway mode the logbook sees calls that never run; leaving them out would hide the decision an auditor asks about first |
 
 ## Rejected
 
