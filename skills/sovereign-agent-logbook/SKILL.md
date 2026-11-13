@@ -1,6 +1,21 @@
 ---
 name: sovereign-agent-logbook
 description: Use whenever an agent is about to take an action with side effects (write, send, pay, delete, change configuration) and a Sovereign Agent Logbook MCP server is connected. Teaches when to log, what to put in each field, when to ask a human, and what must never go in the log.
+version: 0.1.1
+metadata:
+  openclaw:
+    homepage: https://github.com/Delfen-com/sovereign-agent-logbook
+    requires:
+      bins:
+        - sovereign-agent-logbook
+    install:
+      - kind: uv
+        package: sovereign-agent-logbook
+        bins: [sovereign-agent-logbook, logbook]
+    envVars:
+      - name: LOGBOOK_PATH
+        required: false
+        description: Path of the logbook file. Default ./logbook.jsonl.
 ---
 
 # Sovereign Agent Logbook — how to use it well
@@ -8,6 +23,20 @@ description: Use whenever an agent is about to take an action with side effects 
 You have a tamper-evident logbook available as MCP tools: `log_event`,
 `verify_logbook`, `recent_events`, `export_logbook`. This skill tells you
 how to use them so that a human can later reconstruct what you did and why.
+
+## Setup
+
+The tools come from a local MCP server, installed from PyPI as
+`sovereign-agent-logbook` (Python 3.11+). Connect it to your agent as a
+stdio server with the command `sovereign-agent-logbook`. In OpenClaw:
+
+```bash
+openclaw mcp add logbook --command sovereign-agent-logbook
+openclaw mcp doctor logbook --probe
+```
+
+The server makes no network calls of its own. The log is a file on your
+own machine (`LOGBOOK_PATH`).
 
 ## The one rule
 
