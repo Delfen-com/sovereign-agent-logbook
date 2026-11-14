@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.2 — 2026-11-14
+
+Fixes found by using the logbook for Delfen's own agents. No change to the
+log format: files written by 0.1.1 verify the same way.
+
+- `logbook log`: write one event from the command line, for scripts, cron
+  jobs, CI and agents without MCP. It masks secrets the same way as the MCP
+  tool
+- Appends take an exclusive file lock (POSIX), so several processes on one
+  machine can write to the same file without forking the chain. A new test
+  runs four processes in parallel
+- README: how to log without MCP, and why writers on different machines
+  should each keep their own file
+- Skill metadata for ClawHub (`metadata.openclaw`) and
+  `glama.json`
+
 ## 0.1.1 — 2026-11-08
 
 First release on PyPI and in the official MCP registry. No change to the
