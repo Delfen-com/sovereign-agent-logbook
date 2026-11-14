@@ -114,6 +114,21 @@ logbook --path /var/lib/logbook/agent.jsonl export --format csv > audit.csv
 logbook --path /var/lib/logbook/agent.jsonl tail --limit 10
 ```
 
+From a script, cron job or CI pipeline that does not speak MCP, write an
+event with `logbook log`:
+
+```bash
+logbook --path /var/lib/logbook/backup.jsonl log \
+  --agent nightly-backup --model none --action dump_database \
+  --approval auto --approval-rule "runbook 4" \
+  --outcome success --summary "dump written" --arg target=db1
+```
+
+Several processes on one machine may append to the same file: writes take a
+file lock (POSIX). Writers on different machines, for example agents that
+sync the file through git, should each keep their own file, because two
+copies appended separately fork the chain.
+
 ## What an event looks like
 
 ```json

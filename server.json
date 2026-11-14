@@ -7,12 +7,12 @@
     "url": "https://github.com/Delfen-com/sovereign-agent-logbook",
     "source": "github"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "sovereign-agent-logbook",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "transport": {
         "type": "stdio"
       }

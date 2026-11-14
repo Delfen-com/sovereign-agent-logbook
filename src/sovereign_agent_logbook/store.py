@@ -16,6 +16,7 @@ import os
 import re
 import threading
 import uuid
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,6 +35,32 @@ SENSITIVE_KEY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 MASK = "***masked***"
+
+try:  # POSIX: lock the file across processes, not only threads.
+    import fcntl
+except ImportError:  # pragma: no cover - Windows has no fcntl
+    fcntl = None  # type: ignore[assignment]
+
+
+@contextmanager
+def _exclusive(path: Path):
+    """Hold an exclusive lock on a sidecar lock file for the logbook.
+
+    Two processes appending to the same file at the same moment could both
+    read the same last hash and fork the chain. The lock makes "read the
+    tail, write the next line" one step. On systems without fcntl (Windows)
+    only the in-process lock applies; keep one writing process per file there.
+    """
+    if fcntl is None:
+        yield
+        return
+    lock_path = path.with_name(path.name + ".lock")
+    with lock_path.open("a") as lf:
+        fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
 
 
 def mask_secrets(value: Any) -> Any:
@@ -121,7 +148,7 @@ class Logbook:
 
     def append(self, event: Event) -> dict[str, Any]:
         """Append one event, link it to the chain, return the stored record."""
-        with self._lock:
+        with self._lock, _exclusive(self.path):
             last_seq, last_hash = self._tail()
             record: dict[str, Any] = {
                 "spec": "0.1",
