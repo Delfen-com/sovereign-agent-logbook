@@ -51,3 +51,30 @@ def test_parallel_processes_keep_one_chain(tmp_path):
     res = Logbook(path).verify()
     assert res.ok, res.problems
     assert res.events == 100
+
+
+def test_corrects_points_to_earlier_event(tmp_path, capsys):
+    path = tmp_path / "log.jsonl"
+    base = ["--path", str(path), "log", "--agent", "a", "--model", "m"]
+    assert main(base + ["--action", "git.push", "--outcome", "success"]) == 0
+    capsys.readouterr()
+    assert main(base + ["--action", "git.push", "--outcome", "success",
+                        "--corrects", "1", "--summary", "first entry was premature"]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["seq"] == 2
+    lines = [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines()]
+    assert "corrects" not in lines[0]  # optional field stays absent unless used
+    assert lines[1]["corrects"] == 1
+    assert main(["--path", str(path), "verify"]) == 0
+
+
+def test_corrects_rejects_unknown_seq(tmp_path):
+    path = tmp_path / "log.jsonl"
+    lb = Logbook(path)
+    lb.append(Event(agent_id="a", model="m", action="x"))
+    with pytest.raises(ValueError):
+        lb.append(Event(agent_id="a", model="m", action="y", corrects=5))
+    with pytest.raises(SystemExit):
+        main(["--path", str(path), "log", "--agent", "a", "--model", "m",
+              "--action", "y", "--corrects", "0"])
+    assert sum(1 for _ in path.open()) == 1  # nothing written on refusal

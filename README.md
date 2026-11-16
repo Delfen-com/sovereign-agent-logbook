@@ -124,6 +124,21 @@ logbook --path /var/lib/logbook/backup.jsonl log \
   --outcome success --summary "dump written" --arg target=db1
 ```
 
+If an entry turns out to be wrong, do not edit the file: that breaks the
+chain, and `verify` will say so. Append a correction that points to the
+wrong entry by its `seq`:
+
+```bash
+logbook --path /var/lib/logbook/backup.jsonl log \
+  --agent nightly-backup --model none --action dump_database \
+  --outcome error --corrects 41 \
+  --summary "entry 41 said success; the dump had not run"
+```
+
+The wrong entry stays visible and the correction says what was wrong. We
+learned this from our own agents: one logged a push as done before it had
+run.
+
 Several processes on one machine may append to the same file: writes take a
 file lock (POSIX). Writers on different machines, for example agents that
 sync the file through git, should each keep their own file, because two

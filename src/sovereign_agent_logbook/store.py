@@ -97,10 +97,14 @@ class Event:
     # Context
     run_id: str | None = None
     tags: list[str] = field(default_factory=list)
+    # Correction: seq of an earlier event in the same file that this one corrects
+    corrects: int | None = None
 
     def to_record(self) -> dict[str, Any]:
         rec = asdict(self)
         rec["arguments"] = mask_secrets(rec["arguments"])
+        if rec["corrects"] is None:
+            del rec["corrects"]  # optional field: absent unless used
         return rec
 
 
@@ -150,6 +154,11 @@ class Logbook:
         """Append one event, link it to the chain, return the stored record."""
         with self._lock, _exclusive(self.path):
             last_seq, last_hash = self._tail()
+            if event.corrects is not None and not 1 <= event.corrects <= last_seq:
+                raise ValueError(
+                    f"corrects={event.corrects} does not point to an earlier event "
+                    f"(this file has events 1 to {last_seq})"
+                )
             record: dict[str, Any] = {
                 "spec": "0.1",
                 "seq": last_seq + 1,

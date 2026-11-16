@@ -42,6 +42,10 @@ def main(argv: list[str] | None = None) -> int:
     log.add_argument("--run-id")
     log.add_argument("--arg", action="append", default=[], metavar="KEY=VALUE")
     log.add_argument("--tag", action="append", default=[])
+    log.add_argument(
+        "--corrects", type=int, metavar="SEQ",
+        help="seq of an earlier event this one corrects; the earlier line stays as it is",
+    )
 
     args = parser.parse_args(argv)
     lb = Logbook(args.path)
@@ -67,22 +71,26 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error(f"--arg expects KEY=VALUE, got {kv!r}")
             key, value = kv.split("=", 1)
             arguments[key] = value
-        rec = lb.append(
-            Event(
-                agent_id=args.agent_id,
-                model=args.model,
-                action=args.action,
-                arguments=arguments,
-                reason=args.reason,
-                approval=args.approval,
-                approved_by=args.approved_by,
-                approval_rule=args.approval_rule,
-                outcome=args.outcome,
-                result_summary=args.result_summary,
-                run_id=args.run_id,
-                tags=args.tag,
+        try:
+            rec = lb.append(
+                Event(
+                    agent_id=args.agent_id,
+                    model=args.model,
+                    action=args.action,
+                    arguments=arguments,
+                    reason=args.reason,
+                    approval=args.approval,
+                    approved_by=args.approved_by,
+                    approval_rule=args.approval_rule,
+                    outcome=args.outcome,
+                    result_summary=args.result_summary,
+                    run_id=args.run_id,
+                    tags=args.tag,
+                    corrects=args.corrects,
+                )
             )
-        )
+        except ValueError as exc:
+            parser.error(str(exc))
         print(json.dumps({"seq": rec["seq"], "hash": rec["hash"]}))
         return 0
 
