@@ -15,12 +15,16 @@ import argparse
 import json
 import sys
 
+from .paths import resolve_path
 from .store import Event, Logbook
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="logbook")
-    parser.add_argument("--path", default="./logbook.jsonl")
+    parser.add_argument(
+        "--path", default="./logbook.jsonl",
+        help="logbook file; may contain {project} or {cwd}",
+    )
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("verify", help="check the hash chain")
     exp = sub.add_parser("export", help="dump the logbook")
@@ -48,7 +52,7 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     args = parser.parse_args(argv)
-    lb = Logbook(args.path)
+    lb = Logbook(resolve_path(args.path))
 
     if args.cmd == "verify":
         res = lb.verify()

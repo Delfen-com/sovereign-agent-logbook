@@ -95,6 +95,20 @@ block:
 }
 ```
 
+**Installed once for the whole machine?** Then every agent host on it starts
+the same server, and a fixed path sends every project's actions to one file.
+Put `{project}` in the path to give each project its own file:
+
+```json
+"env": { "LOGBOOK_PATH": "~/logbooks/{project}.jsonl" }
+```
+
+`{project}` is the name of the folder the agent works in (the nearest folder
+with a `.git` in it). `{cwd}` is that working folder itself. Most hosts start
+the server in the project folder; the `logbook://about` resource shows which
+file is in use. We added this after a session on one project wrote into
+another project's log on our own machine.
+
 Or run it as a service on your own box with Docker:
 
 ```bash
