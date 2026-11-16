@@ -1,7 +1,7 @@
 ---
 name: sovereign-agent-logbook
 description: Use whenever an agent is about to take an action with side effects (write, send, pay, delete, change configuration) and a Sovereign Agent Logbook MCP server is connected. Teaches when to log, what to put in each field, when to ask a human, and what must never go in the log.
-version: 0.1.2
+version: 0.1.3
 metadata:
   openclaw:
     homepage: https://github.com/Delfen-com/sovereign-agent-logbook
@@ -15,7 +15,7 @@ metadata:
     envVars:
       - name: LOGBOOK_PATH
         required: false
-        description: Path of the logbook file. Default ./logbook.jsonl.
+        description: Path of the logbook file. Default ./logbook.jsonl. Use {project} (e.g. ~/logbooks/{project}.jsonl) when one install serves several projects.
 ---
 
 # Sovereign Agent Logbook — how to use it well

@@ -8,7 +8,9 @@ Run it:
     LOGBOOK_TRANSPORT=http sovereign-agent-logbook   # HTTP on 127.0.0.1:8765
 
 Configuration (environment variables):
-    LOGBOOK_PATH        where the JSON Lines file lives (default ./logbook.jsonl)
+    LOGBOOK_PATH        where the JSON Lines file lives (default ./logbook.jsonl).
+                        May contain {project} or {cwd}; see paths.py. Use
+                        {project} when one server is installed for a whole machine.
     LOGBOOK_TRANSPORT   "stdio" (default) or "http"
     LOGBOOK_HOST        bind address for http (default 127.0.0.1 — never 0.0.0.0 by accident)
     LOGBOOK_PORT        port for http (default 8765)
@@ -22,6 +24,7 @@ from typing import Any, Literal
 from mcp.server.mcpserver import MCPServer
 
 from . import __version__
+from .paths import resolve_path
 from .store import Event, Logbook
 
 LOGBOOK_PATH = os.environ.get("LOGBOOK_PATH", "./logbook.jsonl")
@@ -43,7 +46,7 @@ _logbook: Logbook | None = None
 def get_logbook() -> Logbook:
     global _logbook
     if _logbook is None:
-        _logbook = Logbook(LOGBOOK_PATH)
+        _logbook = Logbook(resolve_path(LOGBOOK_PATH))
     return _logbook
 
 
@@ -117,7 +120,8 @@ def about() -> str:
     """Version and configuration of this logbook server."""
     return (
         f"sovereign-agent-logbook {__version__}\n"
-        f"path: {os.path.abspath(LOGBOOK_PATH)}\n"
+        f"path: {resolve_path(LOGBOOK_PATH).resolve()}\n"
+        f"path setting: {LOGBOOK_PATH}\n"
         "network: none (this server never makes outbound connections)\n"
         "spec: see SPEC.md in the repository"
     )

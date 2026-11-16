@@ -1,7 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.1.3 — 2026-11-16
 
+Two more fixes found by using the logbook for Delfen's own agents. Files
+written by 0.1.2 verify the same way; events without the new field are
+written exactly as before.
+
+- Per-project log paths: `LOGBOOK_PATH` and `logbook --path` accept
+  `{project}` (the project folder's name, found by its `.git`) and `{cwd}`.
+  One machine-wide install with `~/logbooks/{project}.jsonl` keeps each
+  project in its own file. `logbook://about` shows the resolved path
 - Corrections: an optional `corrects` field points to an earlier event that
   a new event corrects. `logbook log --corrects SEQ` and the MCP tool's
   `corrects` argument set it; a value that does not point to an earlier
