@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Corrections: an optional `corrects` field points to an earlier event that
+  a new event corrects. `logbook log --corrects SEQ` and the MCP tool's
+  `corrects` argument set it; a value that does not point to an earlier
+  event is refused. Events without it are written exactly as before, so
+  existing files and readers are unaffected
+- SPEC §2 "Corrections" and a README section on correcting an entry
+
 ## 0.1.2 — 2026-11-14
 
 Fixes found by using the logbook for Delfen's own agents. No change to the

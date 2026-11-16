@@ -61,6 +61,7 @@ def log_event(
     result_summary: str = "",
     run_id: str | None = None,
     tags: list[str] | None = None,
+    corrects: int | None = None,
 ) -> dict[str, Any]:
     """Record one agent action in the logbook.
 
@@ -70,6 +71,8 @@ def log_event(
     Approval: "human" with approved_by, "auto" with approval_rule, or "none".
     Outcome: "pending" when logging before the action; log again with
     "success", "error" or "escalated" after it.
+    Correction: if an earlier event was wrong, never try to change it; log a
+    new event with corrects set to the earlier event's seq.
     Returns the stored record including its seq and hash.
     """
     event = Event(
@@ -85,6 +88,7 @@ def log_event(
         result_summary=result_summary,
         run_id=run_id,
         tags=tags or [],
+        corrects=corrects,
     )
     return get_logbook().append(event)
 

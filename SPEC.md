@@ -40,6 +40,7 @@ about to take. All fields are required unless marked optional.
 | `result_summary` | string | One line describing the result. May be empty. |
 | `run_id` | string or null | Optional. Groups events of one task or conversation. |
 | `tags` | array of strings | Optional labels. May be empty. |
+| `corrects` | integer | Optional, and absent unless used. The `seq` of an earlier event in the same file that this event corrects (§2, Corrections). |
 
 Implementations MAY add further fields. Unknown fields MUST be preserved and
 MUST be included in the hash.
@@ -49,6 +50,18 @@ MUST be included in the hash.
 Log twice per action with side effects: once **before** with
 `outcome: "pending"`, once **after** with the real outcome and the same
 `run_id`. Read-only actions MAY be logged once, after.
+
+### Corrections
+
+An event is never edited or removed once written: that would break the
+chain. If an event turns out to be wrong, for example an outcome logged as
+`"success"` for an action that did not run, the writer appends a new event
+with `corrects` set to the wrong event's `seq` and says what was wrong in
+`result_summary`. A reader takes the newest correction of an event as the
+current state; the wrong event stays visible.
+
+`corrects` MUST point to an event that already exists in the same file
+(1 ≤ `corrects` < own `seq`). A writer MUST refuse other values.
 
 ## 3. Hash chain
 
