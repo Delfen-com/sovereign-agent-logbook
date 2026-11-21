@@ -9,7 +9,7 @@ description = "Open-source, tamper-evident logbook for AI agents. Runs on your o
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
-authors = [{ name = "Delfen B.V." }]
+authors = [{ name = "Delfen" }]
 keywords = ["mcp", "ai-agents", "audit-log", "eu-ai-act", "sovereignty", "hash-chain"]
 classifiers = [
   "Development Status :: 3 - Alpha",
