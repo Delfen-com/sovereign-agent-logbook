@@ -20,6 +20,14 @@ Context Protocol](https://modelcontextprotocol.io).
 > test behind it. What it does not do yet is listed honestly in
 > [ROADMAP.md](ROADMAP.md).
 
+<a href="https://youtu.be/kTrgOtNLA98"><img src="https://img.youtube.com/vi/kTrgOtNLA98/maxresdefault.jpg" width="480" alt="Video: Sovereign Agent Logbook, what it is for and how it works (3:22)"></a>
+
+**Two short videos.** [What it is for and how it works](https://youtu.be/kTrgOtNLA98)
+(3:22, no technical terms) and [a demo of detecting a changed log
+entry](https://youtu.be/d-2gCpmOu-4) (1:50, real terminal output from
+version 0.1.3, including the case it does not catch). Both are in English
+with subtitles; the narration uses an AI voice.
+
 **Follow the build.** Get the release notes by email at
 [delfen.ai/logbook](https://delfen.ai/logbook) (a few mails a year, plus the
 weekly Delfen CTO update; unsubscribe any time). Found a hole in the threat
