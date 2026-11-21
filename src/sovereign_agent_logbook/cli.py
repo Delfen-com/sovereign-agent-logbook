@@ -1,6 +1,7 @@
 """Command-line helper for people who are not running an agent right now.
 
-    logbook verify  [--path logbook.jsonl]
+    logbook verify  [--path logbook.jsonl] [--anchor anchors.jsonl]
+    logbook anchor  [--path logbook.jsonl] --to anchors.jsonl
     logbook export  [--path logbook.jsonl] [--format json|csv]
     logbook tail    [--path logbook.jsonl] [--limit 20]
     logbook log     [--path logbook.jsonl] --agent ID --model M --action A [...]
@@ -14,7 +15,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
+from .chain import anchor_line, check_anchors
 from .paths import resolve_path
 from .store import Event, Logbook
 
@@ -26,7 +29,10 @@ def main(argv: list[str] | None = None) -> int:
         help="logbook file; may contain {project} or {cwd}",
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("verify", help="check the hash chain")
+    ver = sub.add_parser("verify", help="check the hash chain")
+    ver.add_argument("--anchor", metavar="FILE", help="also check this anchor file")
+    anc = sub.add_parser("anchor", help="append the latest (seq, hash) to a second place")
+    anc.add_argument("--to", required=True, metavar="FILE", help="anchor file to append to")
     exp = sub.add_parser("export", help="dump the logbook")
     exp.add_argument("--format", choices=["json", "csv"], default="json")
     tail = sub.add_parser("tail", help="show recent events")
@@ -56,13 +62,29 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "verify":
         res = lb.verify()
-        if res.ok:
-            print(f"OK — {res.events} events, chain intact")
+        problems = list(res.problems)
+        if args.anchor:
+            problems += check_anchors(lb.path, Path(args.anchor))
+        if not problems:
+            note = " and anchors match" if args.anchor else ""
+            print(f"OK — {res.events} events, chain intact{note}")
             return 0
-        print(f"BROKEN — {res.events} events, {len(res.problems)} problem(s):")
-        for p in res.problems:
+        print(f"BROKEN — {res.events} events, {len(problems)} problem(s):")
+        for p in problems:
             print(f"  - {p}")
         return 1
+
+    if args.cmd == "anchor":
+        try:
+            line = json.dumps(anchor_line(lb.path), separators=(",", ":"))
+        except ValueError as exc:
+            parser.error(str(exc))
+        target = Path(args.to)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open("a", encoding="utf-8") as fh:
+            fh.write(line + "\n")
+        print(line)
+        return 0
 
     if args.cmd == "export":
         sys.stdout.write(lb.export(fmt=args.format))

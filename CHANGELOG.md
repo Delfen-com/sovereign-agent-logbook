@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Anchors, step 1: `logbook anchor --to FILE` appends the latest `seq` and
+  hash (no event content) to a second place and prints the line.
+  `logbook verify --anchor FILE` then reports a truncated or rewritten file
+  and exits 1. SPEC §3 "Anchors" has the line format. Verify without
+  `--anchor` behaves as before
+- The `chain.py` docstring now says what verify detects: an edited line
+  fails its own hash; an inserted, deleted or reordered line breaks the link
+  after it; deleted last lines need an anchor
+
 ## 0.1.3 — 2026-11-16
 
 Two more fixes found by using the logbook for Delfen's own agents. Files

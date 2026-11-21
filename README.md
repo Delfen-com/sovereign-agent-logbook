@@ -153,6 +153,22 @@ The wrong entry stays visible and the correction says what was wrong. We
 learned this from our own agents: one logged a push as done before it had
 run.
 
+Deleting the last lines of a file cannot be seen from the file alone. To
+catch it, write an anchor to a second place the log owner does not edit
+alone (another host, a ticket, an email). An anchor is one line with the
+file name, the last `seq`, its hash and the time. It holds no event content.
+
+```bash
+logbook --path /var/lib/logbook/backup.jsonl anchor --to /mnt/other-host/anchors.jsonl
+logbook --path /var/lib/logbook/backup.jsonl verify --anchor /mnt/other-host/anchors.jsonl
+# BROKEN — 40 events, 1 problem(s):
+#   - truncated: anchor at seq 41, file ends at seq 40
+```
+
+`anchor` also prints the line, so you can paste it into a ticket or mail it.
+`verify --anchor` fails if an anchored event is missing (truncated) or has a
+different hash (rewritten). It ignores anchor lines for other file names.
+
 Several processes on one machine may append to the same file: writes take a
 file lock (POSIX). Writers on different machines, for example agents that
 sync the file through git, should each keep their own file, because two

@@ -91,6 +91,21 @@ It does not prove: that the **last** lines were not deleted (truncation),
 or that the writer itself was honest. See `THREAT-MODEL.md` for the
 mitigations (periodic anchoring of the latest hash to an external place).
 
+### Anchors
+
+An anchor records the latest `seq` and `hash` in a second place, so that
+truncation and full rewrites can be seen. One anchor is one JSON line:
+
+```json
+{"anchor":"0.1","logbook":"backup.jsonl","seq":41,"hash":"<64 hex>","ts":"2026-11-21T10:00:00Z"}
+```
+
+`logbook` is the file name of the logbook, without folders. `ts` is UTC.
+An anchor never contains event content. A verifier given an anchor file
+checks every line whose `logbook` equals the file name: the event with that
+`seq` MUST exist (else the file was truncated) and MUST have that `hash`
+(else it was rewritten). Lines for other file names are ignored.
+
 ## 4. Secret masking
 
 Before computing the hash and writing, implementations MUST replace the
