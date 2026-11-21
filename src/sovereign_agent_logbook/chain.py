@@ -1,9 +1,11 @@
 """Hash chain primitives.
 
-Every event carries the hash of the previous event. Change, insert or delete
-one line and every hash after it stops matching. This is the whole trick, and
-it is deliberately simple enough to re-implement in an afternoon in any
-language — see SPEC.md.
+Every event carries the hash of the previous event. An edited line fails its
+own hash check. An inserted, deleted or reordered line breaks the prev_hash
+link of the line after it. Deleting lines at the end is not detected unless
+an anchor exists (see anchor_line and THREAT-MODEL.md). This is the whole
+trick, and it is deliberately simple enough to re-implement in an afternoon
+in any language — see SPEC.md.
 
 What this does NOT protect against is written down in THREAT-MODEL.md.
 """
@@ -12,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -78,3 +81,62 @@ def verify_file(path: Path) -> tuple[bool, list[str]]:
         expected_seq = (seq if isinstance(seq, int) else expected_seq) + 1
 
     return (len(problems) == 0, problems)
+
+
+ANCHOR_VERSION = "0.1"
+
+
+def anchor_line(path: Path) -> dict[str, Any]:
+    """Build an anchor for the last event: file name, seq, hash, UTC time.
+
+    No event content goes into an anchor. Raises ValueError for an empty file.
+    """
+    last = None
+    for _, event in iter_events(path):
+        last = event
+    if last is None:
+        raise ValueError("the logbook has no events yet, nothing to anchor")
+    return {
+        "anchor": ANCHOR_VERSION,
+        "logbook": path.name,
+        "seq": last["seq"],
+        "hash": last["hash"],
+        "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+
+
+def check_anchors(path: Path, anchor_path: Path) -> list[str]:
+    """Compare a logbook with an anchor file. Returns plain-English problems.
+
+    Only anchor lines whose "logbook" equals the logbook's file name count.
+    """
+    if not anchor_path.exists():
+        return [f"anchor file not found: {anchor_path}"]
+    hashes: dict[Any, str] = {}
+    last_seq: Any = 0
+    for _, event in iter_events(path):
+        hashes[event.get("seq")] = event.get("hash")
+        last_seq = event.get("seq")
+    problems: list[str] = []
+    with anchor_path.open("r", encoding="utf-8") as fh:
+        for lineno, raw in enumerate(fh, start=1):
+            raw = raw.strip()
+            if not raw:
+                continue
+            try:
+                a = json.loads(raw)
+            except json.JSONDecodeError:
+                problems.append(f"anchor file line {lineno}: not valid JSON")
+                continue
+            if not isinstance(a, dict) or a.get("logbook") != path.name:
+                continue
+            seq, ts = a.get("seq"), a.get("ts")
+            if seq not in hashes:
+                problems.append(
+                    f"truncated: anchor at seq {seq}, file ends at seq {last_seq}"
+                )
+            elif hashes[seq] != a.get("hash"):
+                problems.append(
+                    f"rewritten: event {seq} has a different hash than anchored on {ts}"
+                )
+    return problems

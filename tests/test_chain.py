@@ -77,3 +77,15 @@ def test_append_survives_reopen(tmp_path):
     Logbook(p).append(_ev(2))
     lb = Logbook(p)
     assert lb.verify().ok and lb.verify().events == 2
+
+
+def test_edit_in_the_middle_flags_only_that_line(tmp_path):
+    lb = _write(tmp_path, 3)
+    lines = lb.path.read_text(encoding="utf-8").splitlines()
+    ev = json.loads(lines[1])
+    ev["action"] = "edited"
+    lines[1] = json.dumps(ev)
+    lb.path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    ok, problems = verify_file(lb.path)
+    assert not ok
+    assert len(problems) == 1 and problems[0].startswith("line 2:")

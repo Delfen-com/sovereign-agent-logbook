@@ -61,7 +61,7 @@ thing.
 
 - **A tamper-evident log.** Each event carries the hash of the previous one.
   Change, insert, remove or reorder a line and `logbook verify` tells you
-  exactly where. ([How, in one file of about 80 lines](src/sovereign_agent_logbook/chain.py))
+  exactly where. ([How, in one file of about 140 lines](src/sovereign_agent_logbook/chain.py))
 - **Any model, any host, or no cloud at all.** Four MCP tools:
   `log_event`, `verify_logbook`, `recent_events`, `export_logbook`.
 - **Secrets masked before writing.** Keys that look like passwords, tokens,
@@ -160,6 +160,22 @@ logbook --path /var/lib/logbook/backup.jsonl log \
 The wrong entry stays visible and the correction says what was wrong. We
 learned this from our own agents: one logged a push as done before it had
 run.
+
+Deleting the last lines of a file cannot be seen from the file alone. To
+catch it, write an anchor to a second place the log owner does not edit
+alone (another host, a ticket, an email). An anchor is one line with the
+file name, the last `seq`, its hash and the time. It holds no event content.
+
+```bash
+logbook --path /var/lib/logbook/backup.jsonl anchor --to /mnt/other-host/anchors.jsonl
+logbook --path /var/lib/logbook/backup.jsonl verify --anchor /mnt/other-host/anchors.jsonl
+# BROKEN — 40 events, 1 problem(s):
+#   - truncated: anchor at seq 41, file ends at seq 40
+```
+
+`anchor` also prints the line, so you can paste it into a ticket or mail it.
+`verify --anchor` fails if an anchored event is missing (truncated) or has a
+different hash (rewritten). It ignores anchor lines for other file names.
 
 Several processes on one machine may append to the same file: writes take a
 file lock (POSIX). Writers on different machines, for example agents that
