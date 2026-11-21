@@ -53,7 +53,7 @@ thing.
 
 - **A tamper-evident log.** Each event carries the hash of the previous one.
   Change, insert, remove or reorder a line and `logbook verify` tells you
-  exactly where. ([How, in one file of about 80 lines](src/sovereign_agent_logbook/chain.py))
+  exactly where. ([How, in one file of about 140 lines](src/sovereign_agent_logbook/chain.py))
 - **Any model, any host, or no cloud at all.** Four MCP tools:
   `log_event`, `verify_logbook`, `recent_events`, `export_logbook`.
 - **Secrets masked before writing.** Keys that look like passwords, tokens,
