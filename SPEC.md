@@ -104,7 +104,9 @@ truncation and full rewrites can be seen. One anchor is one JSON line:
 An anchor never contains event content. A verifier given an anchor file
 checks every line whose `logbook` equals the file name: the event with that
 `seq` MUST exist (else the file was truncated) and MUST have that `hash`
-(else it was rewritten). Lines for other file names are ignored.
+(else it was rewritten). Lines for other file names are ignored. If no line
+matches the file name, the verifier MUST report a problem: nothing was
+checked. A passing result SHOULD say how many anchors were compared.
 
 ## 4. Secret masking
 
