@@ -105,19 +105,23 @@ def anchor_line(path: Path) -> dict[str, Any]:
     }
 
 
-def check_anchors(path: Path, anchor_path: Path) -> list[str]:
-    """Compare a logbook with an anchor file. Returns plain-English problems.
+def check_anchors(path: Path, anchor_path: Path) -> tuple[list[str], int]:
+    """Compare a logbook with an anchor file.
 
+    Returns (plain-English problems, number of anchors compared).
     Only anchor lines whose "logbook" equals the logbook's file name count.
+    If none match, that is a problem: nothing was checked.
     """
     if not anchor_path.exists():
-        return [f"anchor file not found: {anchor_path}"]
+        return [f"anchor file not found: {anchor_path}"], 0
     hashes: dict[Any, str] = {}
     last_seq: Any = 0
     for _, event in iter_events(path):
         hashes[event.get("seq")] = event.get("hash")
         last_seq = event.get("seq")
     problems: list[str] = []
+    checked = 0
+    other_names: list[str] = []
     with anchor_path.open("r", encoding="utf-8") as fh:
         for lineno, raw in enumerate(fh, start=1):
             raw = raw.strip()
@@ -128,8 +132,14 @@ def check_anchors(path: Path, anchor_path: Path) -> list[str]:
             except json.JSONDecodeError:
                 problems.append(f"anchor file line {lineno}: not valid JSON")
                 continue
-            if not isinstance(a, dict) or a.get("logbook") != path.name:
+            if not isinstance(a, dict):
                 continue
+            if a.get("logbook") != path.name:
+                name = str(a.get("logbook"))
+                if name not in other_names:
+                    other_names.append(name)
+                continue
+            checked += 1
             seq, ts = a.get("seq"), a.get("ts")
             if seq not in hashes:
                 problems.append(
@@ -139,4 +149,9 @@ def check_anchors(path: Path, anchor_path: Path) -> list[str]:
                 problems.append(
                     f"rewritten: event {seq} has a different hash than anchored on {ts}"
                 )
-    return problems
+    if checked == 0 and not problems:
+        found = ", ".join(other_names) if other_names else "none"
+        problems.append(
+            f'no anchor for "{path.name}" in {anchor_path} (anchors found for: {found})'
+        )
+    return problems, checked

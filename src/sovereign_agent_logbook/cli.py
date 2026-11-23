@@ -63,10 +63,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "verify":
         res = lb.verify()
         problems = list(res.problems)
+        checked = 0
         if args.anchor:
-            problems += check_anchors(lb.path, Path(args.anchor))
+            anchor_problems, checked = check_anchors(lb.path, Path(args.anchor))
+            problems += anchor_problems
         if not problems:
-            note = " and anchors match" if args.anchor else ""
+            note = ""
+            if args.anchor:
+                note = f", {checked} anchor{'s' if checked != 1 else ''} checked"
             print(f"OK — {res.events} events, chain intact{note}")
             return 0
         print(f"BROKEN — {res.events} events, {len(problems)} problem(s):")
