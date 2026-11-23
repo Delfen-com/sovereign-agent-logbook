@@ -225,8 +225,11 @@ complete copy — that is the point of git.
 
 If you would rather not run a server, a hosted version on EU-only
 infrastructure (Hetzner, Germany / Scaleway, France) with retention
-policies, daily signed anchoring of the chain and a monthly audit export
-is planned. Terms as offered on [delfen.ai/logbook](https://delfen.ai/logbook):
+policies, a monthly audit export and a daily anchor is planned. Every day
+the latest fingerprint of the chain is signed and sent to the customer, and,
+for customers who need it, sealed by an EU qualified timestamp service
+(eIDAS); only the fingerprint is sent, never the log's content. So neither
+the customer's team nor Delfen can shorten or rewrite the record unnoticed. Terms as offered on [delfen.ai/logbook](https://delfen.ai/logbook):
 €29 per month excluding VAT, 30-day free trial, cancel any time; if the
 hosted version is not live by the end of a trial, the trial is cancelled
 rather than charged.
