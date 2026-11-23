@@ -168,6 +168,7 @@ file name, the last `seq`, its hash and the time. It holds no event content.
 
 ```bash
 logbook --path /var/lib/logbook/backup.jsonl anchor --to /mnt/other-host/anchors.jsonl
+# ... later, after the last line of the file was deleted:
 logbook --path /var/lib/logbook/backup.jsonl verify --anchor /mnt/other-host/anchors.jsonl
 # BROKEN — 40 events, 1 problem(s):
 #   - truncated: anchor at seq 41, file ends at seq 40
@@ -228,10 +229,10 @@ complete copy — that is the point of git.
 
 If you would rather not run a server, a hosted version on EU-only
 infrastructure (Hetzner, Germany / Scaleway, France) with retention
-policies, a monthly audit export and a daily anchor is planned. Every day
-the latest fingerprint of the chain would be signed and sent to the
-customer, and, for customers who need it, sealed by an EU qualified
-timestamp service (eIDAS); only the fingerprint is sent, never the log's
+policies, a monthly audit export and a daily anchor is planned. Every day,
+the latest `seq` and hash would be signed and sent to the customer.
+Customers who need it can have it sealed by an EU qualified timestamp
+service (eIDAS). Only this fingerprint leaves the server, never the log's
 content. So neither the customer's team nor Delfen could shorten or rewrite
 the record unnoticed.
 
