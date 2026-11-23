@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.4 — 2026-11-23
+
+Anchors, step 1: a way to notice that the last lines of a logbook were
+deleted, or that the whole file was rewritten. Files written by 0.1.3 verify
+the same way; `verify` without `--anchor` behaves as before.
 
 - Anchors, step 1: `logbook anchor --to FILE` appends the latest `seq` and
   hash (no event content) to a second place and prints the line.
@@ -13,6 +17,10 @@
 - `verify --anchor` now fails when no anchor line matches the file name
   (for example a renamed copy), because nothing was checked. A pass says how
   many anchors were checked
+- README, ROADMAP and THREAT-MODEL describe the planned hosted version's
+  daily anchor: sent to the customer and, where needed, sealed by an EU
+  qualified timestamp service. Nothing of the hosted version ships in this
+  release
 
 ## 0.1.3 — 2026-11-16
 
