@@ -10,6 +10,9 @@
 - The `chain.py` docstring now says what verify detects: an edited line
   fails its own hash; an inserted, deleted or reordered line breaks the link
   after it; deleted last lines need an anchor
+- `verify --anchor` now fails when no anchor line matches the file name
+  (for example a renamed copy), because nothing was checked. A pass says how
+  many anchors were checked
 
 ## 0.1.3 — 2026-11-16
 

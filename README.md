@@ -176,6 +176,9 @@ logbook --path /var/lib/logbook/backup.jsonl verify --anchor /mnt/other-host/anc
 `anchor` also prints the line, so you can paste it into a ticket or mail it.
 `verify --anchor` fails if an anchored event is missing (truncated) or has a
 different hash (rewritten). It ignores anchor lines for other file names.
+If no anchor line matches the file name (for example the file was renamed),
+nothing was checked, so it fails too. When it passes, it says how many
+anchors it checked: `OK — 145 events, chain intact, 3 anchors checked`.
 
 Several processes on one machine may append to the same file: writes take a
 file lock (POSIX). Writers on different machines, for example agents that

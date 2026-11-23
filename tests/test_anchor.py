@@ -66,12 +66,45 @@ def test_rewrite_with_fresh_valid_chain_is_detected(tmp_path, capsys):
     assert "rewritten: event 3 has a different hash than anchored on" in capsys.readouterr().out
 
 
-def test_anchors_for_other_logbooks_are_ignored(tmp_path):
+def test_anchors_for_other_logbooks_are_not_counted(tmp_path, capsys):
     a = _fill(tmp_path / "one.jsonl", 5)
     b = _fill(tmp_path / "two.jsonl", 2)
     anchors = tmp_path / "anchors.jsonl"
     main(["--path", str(a.path), "anchor", "--to", str(anchors)])
-    assert main(["--path", str(b.path), "verify", "--anchor", str(anchors)]) == 0
+    capsys.readouterr()
+    assert main(["--path", str(b.path), "verify", "--anchor", str(anchors)]) == 1
+    out = capsys.readouterr().out
+    assert f'no anchor for "two.jsonl" in {anchors} (anchors found for: one.jsonl)' in out
+
+
+def test_renamed_copy_does_not_pass(tmp_path, capsys):
+    lb = _fill(tmp_path / "log.jsonl", 4)
+    anchors = tmp_path / "anchors.jsonl"
+    main(["--path", str(lb.path), "anchor", "--to", str(anchors)])
+    lines = lb.path.read_text(encoding="utf-8").splitlines()
+    cut = tmp_path / "cut.jsonl"
+    cut.write_text("\n".join(lines[:2]) + "\n", encoding="utf-8")
+    capsys.readouterr()
+    assert main(["--path", str(cut), "verify", "--anchor", str(anchors)]) == 1
+    assert 'no anchor for "cut.jsonl"' in capsys.readouterr().out
+
+
+def test_empty_anchor_file_is_not_a_pass(tmp_path, capsys):
+    lb = _fill(tmp_path / "log.jsonl", 1)
+    anchors = tmp_path / "anchors.jsonl"
+    anchors.write_text("", encoding="utf-8")
+    assert main(["--path", str(lb.path), "verify", "--anchor", str(anchors)]) == 1
+    assert "anchors found for: none" in capsys.readouterr().out
+
+
+def test_ok_message_names_how_many_anchors_were_checked(tmp_path, capsys):
+    lb = _fill(tmp_path / "log.jsonl", 1)
+    anchors = tmp_path / "anchors.jsonl"
+    for _ in range(3):
+        main(["--path", str(lb.path), "anchor", "--to", str(anchors)])
+    capsys.readouterr()
+    assert main(["--path", str(lb.path), "verify", "--anchor", str(anchors)]) == 0
+    assert capsys.readouterr().out.strip() == "OK — 1 events, chain intact, 3 anchors checked"
 
 
 def test_missing_anchor_file_fails(tmp_path):
