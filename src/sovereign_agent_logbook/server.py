@@ -60,7 +60,9 @@ def log_event(
     approval: Literal["human", "auto", "none"] = "none",
     approved_by: str | None = None,
     approval_rule: str | None = None,
-    outcome: Literal["success", "error", "escalated", "pending"] = "pending",
+    outcome: Literal[
+        "success", "error", "escalated", "refused", "pending"
+    ] = "pending",
     result_summary: str = "",
     run_id: str | None = None,
     tags: list[str] | None = None,
@@ -73,7 +75,8 @@ def log_event(
     Why: reason — one plain sentence.
     Approval: "human" with approved_by, "auto" with approval_rule, or "none".
     Outcome: "pending" when logging before the action; log again with
-    "success", "error" or "escalated" after it.
+    "success", "error", "escalated" or "refused" after it. Use "refused"
+    when the call did not run because it was refused.
     Correction: if an earlier event was wrong, never try to change it; log a
     new event with corrects set to the earlier event's seq.
     Returns the stored record including its seq and hash.

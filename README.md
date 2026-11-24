@@ -146,6 +146,11 @@ logbook --path /var/lib/logbook/backup.jsonl log \
   --outcome success --summary "dump written" --arg target=db1
 ```
 
+When a call is refused and does not run, log it with `--outcome refused`.
+A refusal by a person also takes `--approval human --approved-by <name>`;
+a refusal by a rule takes `--approval auto --approval-rule "<rule>"`.
+`escalated` means the call was handed to a human to decide, not refused.
+
 If an entry turns out to be wrong, do not edit the file: that breaks the
 chain, and `verify` will say so. Append a correction that points to the
 wrong entry by its `seq`:

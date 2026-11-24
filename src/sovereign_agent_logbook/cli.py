@@ -46,7 +46,9 @@ def main(argv: list[str] | None = None) -> int:
     log.add_argument("--approved-by")
     log.add_argument("--approval-rule")
     log.add_argument(
-        "--outcome", choices=["success", "error", "escalated", "pending"], default="pending"
+        "--outcome",
+        choices=["success", "error", "escalated", "refused", "pending"],
+        default="pending",
     )
     log.add_argument("--summary", default="", dest="result_summary")
     log.add_argument("--run-id")

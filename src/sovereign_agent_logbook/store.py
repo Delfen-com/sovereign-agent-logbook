@@ -24,7 +24,7 @@ from typing import Any, Literal
 
 from .chain import GENESIS_HASH, canonical_json, compute_hash, iter_events, verify_file
 
-Outcome = Literal["success", "error", "escalated", "pending"]
+Outcome = Literal["success", "error", "escalated", "refused", "pending"]
 ApprovalKind = Literal["human", "auto", "none"]
 
 # Keys whose values are masked wherever they appear in `arguments`.
