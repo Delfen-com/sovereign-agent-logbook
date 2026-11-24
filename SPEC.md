@@ -36,7 +36,7 @@ about to take. All fields are required unless marked optional.
 | `approval` | string | `"human"`, `"auto"` or `"none"`. |
 | `approved_by` | string or null | Who approved, when `approval` is `"human"`. |
 | `approval_rule` | string or null | Which rule allowed it, when `approval` is `"auto"`. |
-| `outcome` | string | `"pending"`, `"success"`, `"error"` or `"escalated"`. |
+| `outcome` | string | `"pending"`, `"success"`, `"error"`, `"escalated"` or `"refused"`. See below. |
 | `result_summary` | string | One line describing the result. May be empty. |
 | `run_id` | string or null | Optional. Groups events of one task or conversation. |
 | `tags` | array of strings | Optional labels. May be empty. |
@@ -44,6 +44,18 @@ about to take. All fields are required unless marked optional.
 
 Implementations MAY add further fields. Unknown fields MUST be preserved and
 MUST be included in the hash.
+
+### Outcome values
+
+- `"refused"`: the call did not run, because a person or a rule said no.
+  A refusal by a person is recorded with `approval: "human"` and
+  `approved_by`. A refusal by a rule is recorded with `approval: "auto"` and
+  `approval_rule`.
+- `"escalated"`: the call was handed to a human to decide. It is not a
+  refusal; a later event records what the human decided.
+- A reader that does not know a value (for example a 0.1.3 reader seeing
+  `"refused"`) still verifies the chain: the hash covers the line as
+  written and does not check the value.
 
 ### Recommended usage pattern
 

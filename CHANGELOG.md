@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- New `outcome` value `refused`: the call did not run because a person or a
+  rule said no. `logbook log --outcome refused` and the MCP `log_event` tool
+  accept it. SPEC §2 explains how it differs from `escalated`. Logbooks
+  written by 0.1.3 and 0.1.4 verify as before
+
 ## 0.1.4 — 2026-11-23
 
 Anchors, step 1: a way to notice that the last lines of a logbook were
