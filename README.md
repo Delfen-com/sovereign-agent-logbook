@@ -13,6 +13,7 @@ Context Protocol](https://modelcontextprotocol.io).
 
 [![CI](https://github.com/Delfen-com/sovereign-agent-logbook/actions/workflows/ci.yml/badge.svg)](https://github.com/Delfen-com/sovereign-agent-logbook/actions/workflows/ci.yml)
 ![Licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue)
+[![Delfen-com/sovereign-agent-logbook MCP server](https://glama.ai/mcp/servers/Delfen-com/sovereign-agent-logbook/badges/score.svg)](https://glama.ai/mcp/servers/Delfen-com/sovereign-agent-logbook)
 ![Status: v0.1 — early, working, tests passing](https://img.shields.io/badge/status-v0.1%20early-orange)
 
 > **v0.1 is a working skeleton, not a finished product.** It logs, chains,
