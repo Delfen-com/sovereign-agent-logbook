@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Optional time stamp for an anchor: `logbook timestamp --anchor FILE --tsa URL`
+  sends the SHA-256 of the last anchor line to an RFC 3161 time stamp service
+  and stores the signed answer next to the anchor file.
+  `logbook timestamp-verify --anchor FILE` fails if that anchor line was
+  changed after stamping. It uses only the standard library, is loaded only
+  by these two commands, and sends nothing but the fingerprint. A free
+  service gives a time stamp, not the legal "qualified" status. The README
+  shows the `openssl ts -verify` command that checks the service's signature
 - New `outcome` value `refused`: the call did not run because a person or a
   rule said no. `logbook log --outcome refused` and the MCP `log_event` tool
   accept it. SPEC §2 explains how it differs from `escalated`. Logbooks
