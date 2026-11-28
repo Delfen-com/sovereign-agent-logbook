@@ -187,6 +187,39 @@ If no anchor line matches the file name (for example the file was renamed),
 nothing was checked, so it fails too. When it passes, it says how many
 anchors it checked: `OK — 145 events, chain intact, 3 anchors checked`.
 
+### Optional: a time stamp from an outside service
+
+An anchor says what the log looked like; it does not prove when. An outside
+time stamp service (RFC 3161) can sign "this fingerprint existed at this
+time". This is optional and separate from the logbook core: the only network
+call in the package is the one `timestamp` makes, to the address you give it.
+
+```bash
+logbook timestamp --anchor anchors.jsonl --tsa https://freetsa.org/tsr
+# stamped: anchors.jsonl.3.tsr
+logbook timestamp-verify --anchor anchors.jsonl
+# OK — anchor line 3 matches the token, stamped 20261127051000Z
+```
+
+`timestamp` sends the SHA-256 of the last anchor line, and nothing else. No
+log content, file name or event goes out. The signed answer is saved next to
+the anchor file as `<anchor file>.<line number>.tsr`. `timestamp-verify`
+fails if that line was changed after it was stamped, or if no token exists.
+
+It checks that the token belongs to the anchor line. It does not check the
+service's signature. For that, use OpenSSL and the service's own certificate
+files:
+
+```bash
+LINE=$(sed -n 3p anchors.jsonl | tr -d '\n' | sha256sum | cut -d' ' -f1)
+openssl ts -verify -digest "$LINE" -sha256 -in anchors.jsonl.3.tsr \
+  -CAfile cacert.pem -untrusted tsa.crt
+```
+
+A free service gives a trustworthy time. It does not give the legal
+"qualified" status under eIDAS (EU rules on electronic signatures and time
+stamps). That needs a qualified provider, which is not built in yet.
+
 Several processes on one machine may append to the same file: writes take a
 file lock (POSIX). Writers on different machines, for example agents that
 sync the file through git, should each keep their own file, because two

@@ -2,6 +2,8 @@
 
     logbook verify  [--path logbook.jsonl] [--anchor anchors.jsonl]
     logbook anchor  [--path logbook.jsonl] --to anchors.jsonl
+    logbook timestamp --anchor anchors.jsonl --tsa URL
+    logbook timestamp-verify --anchor anchors.jsonl
     logbook export  [--path logbook.jsonl] [--format json|csv]
     logbook tail    [--path logbook.jsonl] [--limit 20]
     logbook log     [--path logbook.jsonl] --agent ID --model M --action A [...]
@@ -33,6 +35,16 @@ def main(argv: list[str] | None = None) -> int:
     ver.add_argument("--anchor", metavar="FILE", help="also check this anchor file")
     anc = sub.add_parser("anchor", help="append the latest (seq, hash) to a second place")
     anc.add_argument("--to", required=True, metavar="FILE", help="anchor file to append to")
+    ts = sub.add_parser(
+        "timestamp",
+        help="get a time stamp (RFC 3161) for the last anchor line; sends only its fingerprint",
+    )
+    ts.add_argument("--anchor", required=True, metavar="FILE", help="anchor file")
+    ts.add_argument("--tsa", required=True, metavar="URL", help="time stamp service address")
+    tsv = sub.add_parser(
+        "timestamp-verify", help="check the stored time stamp still covers the last anchor line"
+    )
+    tsv.add_argument("--anchor", required=True, metavar="FILE", help="anchor file")
     exp = sub.add_parser("export", help="dump the logbook")
     exp.add_argument("--format", choices=["json", "csv"], default="json")
     tail = sub.add_parser("tail", help="show recent events")
@@ -60,6 +72,23 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     args = parser.parse_args(argv)
+
+    if args.cmd in ("timestamp", "timestamp-verify"):
+        # Imported here so the logbook core never loads an HTTP client.
+        from . import timestamp as ts_mod
+
+        try:
+            if args.cmd == "timestamp":
+                out = ts_mod.stamp(Path(args.anchor), args.tsa)
+                print(f"stamped: {out}")
+                return 0
+            ok, msg = ts_mod.check(Path(args.anchor))
+        except ts_mod.TimestampError as exc:
+            print(f"ERROR — {exc}")
+            return 1
+        print(("OK — " if ok else "BROKEN — ") + msg)
+        return 0 if ok else 1
+
     lb = Logbook(resolve_path(args.path))
 
     if args.cmd == "verify":
